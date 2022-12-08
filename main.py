@@ -1,20 +1,26 @@
 from ursina import *
-from resource_spots import *
-from mresource import *
-from player import *
+from random import randint
+import resource_spots as respot
+import mresource as res
+import player as pl
+import miner as min
 
 app = Ursina(borderless = False)
 camera.orthographic = True
 
-player1 = player(0, 0, "sergio", "#86B9CE")
-test_spot = resource_spot(0, 0, 10, resource("iron"))
-second_test_spot = resource_spot(20, 0, 1, resource("iron"))
+player1 = pl.player(0, 0, "sergio", "#86B9CE")
+
+for i in range(20):
+    respot.resource_spot(randint(-50, 50), randint(-50, 50), randint(3, 10), res.resource("iron"))
 
 
 def update():
     player1.update_movement()
     mouse_x = mouse.position[0] * 40 + camera.x
     mouse_y = mouse.position[1] * 40 + camera.y
+
+    for i in min.miner_list:
+        i.update()
 
 
 def input(key):
@@ -25,7 +31,16 @@ def input(key):
     #if key == "scroll down":
     #    camera.z -= 5
     
-    pass
+    if key == "m":
+        global miner
+        miner = min.miner()
+        miner.to_cursor()
+
+    if key == "left mouse down":
+        try:
+            miner.place()
+        except:
+            pass
 
 
 app.run()
